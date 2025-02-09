@@ -47,7 +47,7 @@
             </strong>
         </p>
 
-        <form onsubmit="resetPassword(event)" class="mt-6 space-y-4">
+        <form action="Login.jsp" class="mt-6 space-y-4">
             <!-- New Password Input -->
             <div class="relative">
                 <span class="absolute left-4 top-3 text-gray-500 text-lg">&#128274;</span>

@@ -23,7 +23,7 @@
             <p class="text-lg sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-2/3">
                 You will surely find your ideal job choice with ease.
             </p>
-            <a href="login.jsp">
+            <a href="Login.jsp">
                 <button class="h-[45px] w-[180px] sm:w-[220px] bg-blue-600 border-2 text-white text-lg font-semibold rounded-md hover:bg-blue-700 transition duration-300">
                     Get Started
                 </button>

@@ -33,14 +33,14 @@
         
         <div class="bg-white shadow-lg rounded-lg p-8 w-1/3">
             <h2 class="text-2xl font-semibold mb-6 text-center">Login</h2>
-            <form action="LoginServlet" method="POST">
+            <form action="Job.jsp" method="POST">
                 <label class="block text-gray-700 font-semibold">Email ID / Username</label>
                 <input type="text" name="email" placeholder="Enter Email ID / Username" class="w-full p-2 mt-2 border rounded-md" required>
                 
                 <label class="block text-gray-700 font-semibold mt-4">Password</label>
                 <input type="password" name="password" placeholder="Enter Password" class="w-full p-2 mt-2 border rounded-md" required>
                 
-                <a href="forgot-password.jsp" class="block text-right text-blue-600 text-sm mt-2">Forgot Password?</a>
+                <a href="ForgotPassword.jsp" class="block text-right text-blue-600 text-sm mt-2">Forgot Password?</a>
                 <button type="submit" class="w-full mt-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Login</button>
             </form>
             

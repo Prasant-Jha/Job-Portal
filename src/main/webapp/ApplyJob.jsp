@@ -19,7 +19,7 @@
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Apply for Job</h2>
                 <p class="text-lg text-gray-800 mb-4">Upload your resume</p>
                 
-                <form action="applyJobServlet" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <form action="EmployeeDashboard.jsp" method="POST" enctype="multipart/form-data" class="space-y-4">
                     <input 
                         type="file" 
                         name="resume" 
@@ -30,7 +30,7 @@
                     <button 
                         type="submit" 
                         class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-medium shadow-md hover:bg-blue-700 transition w-full"
-                        onclick="window.location.href='employee-dashboard.jsp'">
+                        onclick="window.location.href='EmployeeDashboard.jsp'">
                         Submit Application
                     </button>
                 </form>

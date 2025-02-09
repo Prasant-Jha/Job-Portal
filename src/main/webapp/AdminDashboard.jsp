@@ -12,7 +12,7 @@
     
     <%@ include file="Header.jsp" %>
 
-    <div class="flex w-full h-screen">
+    <div class="flex w-full h-[calc(100vh-80px)]">
         <%@ include file="Sidebar.jsp" %>
 
         <!-- Main Dashboard Section -->

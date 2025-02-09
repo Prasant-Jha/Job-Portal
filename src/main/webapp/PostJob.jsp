@@ -18,11 +18,11 @@
     
     <%@ include file="Header.jsp" %>
 
-    <div class="flex">
+    <div class="flex w-full h-[calc(100vh-80px)]">
         <%@ include file="Sidebar.jsp" %>
         
-        <div class="w-3/4 mx-auto mt-10">
-            <div class="bg-white p-8 border border-gray-300 rounded-lg shadow-lg">
+        <div class="w-3/4 h-full flex flex-col items-center overflow-y-auto py-10 space-y-6 px-8">
+            <div class="w-full bg-white p-8 border border-gray-300 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Post a Job</h2>
                 
                 <form id="jobForm" action="postJobServlet" method="POST" enctype="multipart/form-data">

@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,20 +21,25 @@
             
             <h2 class="text-2xl font-bold text-gray-800">Your Applications</h2>
             
-            <%-- Check if user has any applications --%>
-            <c:if test="${empty userApplications}">
-                <p class="text-gray-600">You haven't applied for any jobs yet.</p>
-            </c:if>
-            
-            <%-- Loop through user applications if any exist --%>
-            <c:forEach var="app" items="${userApplications}">
-                <div class="bg-white w-11/12 p-6 border border-gray-300 rounded-lg shadow-md">
-                    <p class="text-gray-700"><strong>Job ID:</strong> ${app.jobId}</p>
-                    <p class="text-gray-700"><strong>Resume:</strong> ${app.resumeName}</p>
-                    <p class="text-gray-700"><strong>Status:</strong> <span class="text-blue-600">${app.status}</span></p>
-                </div>
-            </c:forEach>
-            
+            <%-- Static Applications --%>
+            <div class="bg-white w-11/12 p-6 border border-gray-300 rounded-lg shadow-md">
+                <p class="text-gray-700"><strong>Job ID:</strong> 101</p>
+                <p class="text-gray-700"><strong>Resume:</strong> resume_101.pdf</p>
+                <p class="text-gray-700"><strong>Status:</strong> <span class="text-blue-600">Pending</span></p>
+            </div>
+
+            <div class="bg-white w-11/12 p-6 border border-gray-300 rounded-lg shadow-md">
+                <p class="text-gray-700"><strong>Job ID:</strong> 102</p>
+                <p class="text-gray-700"><strong>Resume:</strong> resume_102.pdf</p>
+                <p class="text-gray-700"><strong>Status:</strong> <span class="text-green-600">Accepted</span></p>
+            </div>
+
+            <div class="bg-white w-11/12 p-6 border border-gray-300 rounded-lg shadow-md">
+                <p class="text-gray-700"><strong>Job ID:</strong> 103</p>
+                <p class="text-gray-700"><strong>Resume:</strong> resume_103.pdf</p>
+                <p class="text-gray-700"><strong>Status:</strong> <span class="text-red-600">Rejected</span></p>
+            </div>
+
         </div>
     </div>
 

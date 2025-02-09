@@ -37,7 +37,7 @@
         <h2 class="text-2xl font-semibold text-gray-800 text-center">Forgot Password?</h2>
         <p class="text-gray-600 text-center mt-2">Enter your email to receive an OTP.</p>
 
-        <form onsubmit="sendOTP(event)" class="mt-6">
+        <form  action="VerifyOTP.jsp" class="mt-6">
             <div class="relative">
                 <span class="absolute left-3 top-3 text-gray-400">&#9993;</span>
                 <input

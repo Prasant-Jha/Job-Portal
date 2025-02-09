@@ -35,7 +35,7 @@
         <div class="bg-white rounded-lg max-w-2xl w-full p-8 shadow-md">
             <h1 class="text-2xl font-bold mb-2">Create your profile</h1>
             <p class="text-gray-600 text-sm mb-4">Search & apply to jobs from India's No.1 Job Site</p>
-            <form action="registerServlet" method="POST" class="space-y-4">
+            <form action="Login.jsp" method="POST" class="space-y-4">
                 <div>
                     <label class="font-semibold">Full name*</label>
                     <input type="text" name="fullName" placeholder="What is your name?" class="w-full p-2 border rounded mt-1">

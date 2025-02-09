@@ -1,20 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.*" %>
+
 <%
     String currentPath = request.getRequestURI();
-    String openSection = null;
-
-    // Define the section mappings
-    Map<String, List<String>> sectionMapping = new HashMap<>();
-    sectionMapping.put("admin", Arrays.asList("/admin-dashboard", "/users", "/job-posts"));
-    sectionMapping.put("employer", Arrays.asList("/employer-dashboard", "/post-job"));
-
-    // Check if the current path belongs to a section
-    for (Map.Entry<String, List<String>> entry : sectionMapping.entrySet()) {
-        if (entry.getValue().contains(currentPath)) {
-            openSection = entry.getKey();
-            break;
-        }
+    String currentPage = currentPath.substring(currentPath.lastIndexOf("/") + 1);
+    if (currentPage.contains("?")) {
+        currentPage = currentPage.substring(0, currentPage.indexOf("?"));
     }
 %>
 
@@ -48,15 +39,13 @@
                     <div class="flex items-center space-x-3">
                         📊 <span>Admin</span>
                     </div>
-                    <span class="text-gray-400 text-lg transform <%= "admin".equals(openSection) ? "rotate-90" : "" %>">▶</span>
+                    <span id="admin-arrow" class="text-gray-400 text-lg transition-transform">▶</span>
                 </div>
-                <% if ("admin".equals(openSection)) { %>
-                    <ul class="pl-8 mt-2 space-y-2">
-                        <li><a href="AdminDashboard.jsp" class="block p-2 rounded-md <%= currentPath.equals("/admin-dashboard") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Admin Dashboard</a></li>
-                        <li><a href="UsersPage.jsp" class="block p-2 rounded-md <%= currentPath.equals("/users") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Users Page</a></li>
-                        <li><a href="/JobPostsPage.jsp" class="block p-2 rounded-md <%= currentPath.equals("/job-posts") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Job Posts Page</a></li>
-                    </ul>
-                <% } %>
+                <ul id="admin-menu" class="pl-8 mt-2 space-y-2 hidden">
+                    <li><a href="AdminDashboard.jsp" class="block p-2 rounded-md <%= currentPage.equals("AdminDashboard.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Admin Dashboard</a></li>
+                    <li><a href="UsersPage.jsp" class="block p-2 rounded-md <%= currentPage.equals("UsersPage.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Users Page</a></li>
+                    <li><a href="JobPostsPage.jsp" class="block p-2 rounded-md <%= currentPage.equals("JobPostsPage.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Job Posts Page</a></li>
+                </ul>
             </li>
 
             <!-- Employer Section -->
@@ -66,37 +55,35 @@
                     <div class="flex items-center space-x-3">
                         💼 <span>Employer</span>
                     </div>
-                    <span class="text-gray-400 text-lg transform <%= "employer".equals(openSection) ? "rotate-90" : "" %>">▶</span>
+                    <span id="employer-arrow" class="text-gray-400 text-lg transition-transform">▶</span>
                 </div>
-                <% if ("employer".equals(openSection)) { %>
-                    <ul class="pl-8 mt-2 space-y-2">
-                        <li><a href="EmployerDashboard.jsp" class="block p-2 rounded-md <%= currentPath.equals("/employer-dashboard") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Employer Dashboard</a></li>
-                        <li><a href="PostJob.jsp" class="block p-2 rounded-md <%= currentPath.equals("/post-job") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Post a Job</a></li>
-                    </ul>
-                <% } %>
+                <ul id="employer-menu" class="pl-8 mt-2 space-y-2 hidden">
+                    <li><a href="EmployerDashboard.jsp" class="block p-2 rounded-md <%= currentPage.equals("EmployerDashboard.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Employer Dashboard</a></li>
+                    <li><a href="PostJob.jsp" class="block p-2 rounded-md <%= currentPage.equals("PostJob.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Post a Job</a></li>
+                </ul>
             </li>
 
             <!-- Other Sections -->
             <li>
-                <a href="Job.jsp" class="flex items-center p-4 rounded-lg shadow-md <%= currentPath.equals("/jobs") ? "bg-blue-500 text-white font-bold" : "text-gray-700 hover:text-blue-600" %>">
+                <a href="Job.jsp" class="flex items-center p-4 rounded-lg shadow-md <%= currentPage.equals("Job.jsp") ? "bg-blue-500 text-white font-bold" : "text-gray-700 hover:text-blue-600" %>">
                     💼 <span class="ml-3">Jobs</span>
                 </a>
             </li>
 
             <li>
-                <a href="Profile.jsp" class="flex items-center p-4 rounded-lg shadow-md <%= currentPath.equals("/profile") ? "bg-blue-500 text-white font-bold" : "text-gray-700 hover:text-blue-600" %>">
+                <a href="Profile.jsp" class="flex items-center p-4 rounded-lg shadow-md <%= currentPage.equals("Profile.jsp") ? "bg-blue-500 text-white font-bold" : "text-gray-700 hover:text-blue-600" %>">
                     👤 <span class="ml-3">Profile</span>
                 </a>
             </li>
 
             <li>
-                <a href="EmployeeDashboard.jsp" class="flex items-center p-4 rounded-lg shadow-md <%= currentPath.equals("/employee-dashboard") ? "bg-blue-500 text-white font-bold" : "text-gray-700 hover:text-blue-600" %>">
+                <a href="EmployeeDashboard.jsp" class="flex items-center p-4 rounded-lg shadow-md <%= currentPage.equals("EmployeeDashboard.jsp") ? "bg-blue-500 text-white font-bold" : "text-gray-700 hover:text-blue-600" %>">
                     📄 <span class="ml-3">Applications</span>
                 </a>
             </li>
 
             <li>
-                <a href="/Logout" class="flex items-center p-4 rounded-lg shadow-md text-red-600">
+                <a href="Login.jsp" class="flex items-center p-4 rounded-lg shadow-md text-red-600">
                     🚪 Logout
                 </a>
             </li>
@@ -105,10 +92,29 @@
 
     <script>
         function toggleSection(section) {
-            const openSection = localStorage.getItem("openSection");
-            localStorage.setItem("openSection", openSection === section ? "" : section);
-            location.reload();
+            const menu = document.getElementById(section + "-menu");
+            const arrow = document.getElementById(section + "-arrow");
+
+            if (menu.classList.contains("hidden")) {
+                menu.classList.remove("hidden");
+                arrow.classList.add("rotate-90");
+                localStorage.setItem(section, "open");
+            } else {
+                menu.classList.add("hidden");
+                arrow.classList.remove("rotate-90");
+                localStorage.removeItem(section);
+            }
         }
+
+        // Restore open sections on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            ["admin", "employer"].forEach(section => {
+                if (localStorage.getItem(section) === "open") {
+                    document.getElementById(section + "-menu").classList.remove("hidden");
+                    document.getElementById(section + "-arrow").classList.add("rotate-90");
+                }
+            });
+        });
     </script>
 
 </body>

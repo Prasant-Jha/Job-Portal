@@ -53,7 +53,7 @@
 
                 <!-- Apply Button -->
                 <div class="mt-8 flex justify-center">
-                    <a href="apply-job.jsp" class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-medium shadow-md hover:bg-blue-700 transition">
+                    <a href="ApplyJob.jsp" class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-medium shadow-md hover:bg-blue-700 transition">
                         Apply Now
                     </a>
                 </div>
