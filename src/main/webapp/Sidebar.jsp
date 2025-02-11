@@ -91,30 +91,67 @@
     </div>
 
     <script>
-        function toggleSection(section) {
-            const menu = document.getElementById(section + "-menu");
-            const arrow = document.getElementById(section + "-arrow");
+    function toggleSection(section) {
+        const sections = ["admin", "employer"];
+        let isAnyOpen = false;
 
-            if (menu.classList.contains("hidden")) {
-                menu.classList.remove("hidden");
-                arrow.classList.add("rotate-90");
-                localStorage.setItem(section, "open");
+        sections.forEach(sec => {
+            const menu = document.getElementById(sec + "-menu");
+            const arrow = document.getElementById(sec + "-arrow");
+
+            if (sec === section) {
+                if (menu.classList.contains("hidden")) {
+                    menu.classList.remove("hidden");
+                    arrow.classList.add("rotate-90");
+                    localStorage.setItem(sec, "open");
+                    isAnyOpen = true;
+                } else {
+                    menu.classList.add("hidden");
+                    arrow.classList.remove("rotate-90");
+                    localStorage.removeItem(sec);
+                }
             } else {
                 menu.classList.add("hidden");
                 arrow.classList.remove("rotate-90");
-                localStorage.removeItem(section);
+                localStorage.removeItem(sec);
             }
-        }
-
-        // Restore open sections on page load
-        document.addEventListener("DOMContentLoaded", function () {
-            ["admin", "employer"].forEach(section => {
-                if (localStorage.getItem(section) === "open") {
-                    document.getElementById(section + "-menu").classList.remove("hidden");
-                    document.getElementById(section + "-arrow").classList.add("rotate-90");
-                }
-            });
         });
+
+        // Check if a submenu item is selected
+        const selectedMenuItem = document.querySelector(".bg-blue-500");
+        if (!selectedMenuItem) {
+            sections.forEach(sec => {
+                document.getElementById(sec + "-menu").classList.add("hidden");
+                document.getElementById(sec + "-arrow").classList.remove("rotate-90");
+                localStorage.removeItem(sec);
+            });
+        }
+    }
+
+    // Restore open sections on page load based on selected menu item
+    document.addEventListener("DOMContentLoaded", function () {
+        const sections = ["admin", "employer"];
+        const selectedMenuItem = document.querySelector(".bg-blue-500");
+        let isAnyOpen = false;
+
+        sections.forEach(section => {
+            if (localStorage.getItem(section) === "open" && selectedMenuItem) {
+                document.getElementById(section + "-menu").classList.remove("hidden");
+                document.getElementById(section + "-arrow").classList.add("rotate-90");
+                isAnyOpen = true;
+            }
+        });
+
+        // If no menu item is selected, ensure all menus are closed
+        if (!isAnyOpen) {
+            sections.forEach(section => {
+                localStorage.removeItem(section);
+                document.getElementById(section + "-menu").classList.add("hidden");
+                document.getElementById(section + "-arrow").classList.remove("rotate-90");
+            });
+        }
+    });
+
     </script>
 
 </body>

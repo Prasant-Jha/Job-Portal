@@ -36,7 +36,9 @@
 <body class="flex flex-col items-center min-h-screen bg-gray-100">
 
     <!-- Header Section -->
-    <%@ include file="Header.jsp" %>
+    <div class="w-full h-20 flex items-center justify-between bg-white shadow-md px-20">
+        <div class="text-2xl font-bold text-blue-600 cursor-pointer">Jobby</div>
+    </div>
 
     <!-- Reset Password Card -->
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md mt-[18vh]">

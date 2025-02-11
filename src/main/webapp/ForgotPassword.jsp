@@ -30,7 +30,9 @@
 <body class="flex flex-col items-center min-h-screen bg-gray-100">
 
     <!-- Upper Section -->
-    <%@ include file="Header.jsp" %>
+    <div class="w-full h-20 flex items-center justify-between bg-white shadow-md px-20">
+        <div class="text-2xl font-bold text-blue-600 cursor-pointer">Jobby</div>
+    </div>
 
     <!-- Forgot Password Container -->
     <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-8 mt-[20vh] border border-gray-200">
