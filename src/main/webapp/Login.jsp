@@ -27,7 +27,7 @@
                 <li class="flex items-center"><span class="text-green-500 text-xl mr-2">&#10003;</span> Showcase profile to top companies.</li>
                 <li class="flex items-center"><span class="text-green-500 text-xl mr-2">&#10003;</span> Know application status on applied jobs.</li>
             </ul>
-            <a href="register.jsp" class="mt-6 inline-block px-6 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-gray-100">Register for Free</a>
+            <a href="Register.jsp" class="mt-6 inline-block px-6 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-gray-100">Register for Free</a>
             <img src="assets/login-img.png" alt="Login" class="w-40 mt-6 mx-auto"/>
         </div>
         
