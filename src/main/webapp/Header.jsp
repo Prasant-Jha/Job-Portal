@@ -10,7 +10,7 @@
 
     <div class="w-full h-20 flex items-center justify-between bg-white shadow-md px-20">
         <div class="text-2xl font-bold text-blue-600 cursor-pointer">Jobby</div>
-        <p>You are logged in as <%= session.getAttribute("username") != null ? session.getAttribute("username") : "Guest" %>!</p>
+       <p>You are logged in as <%= session.getAttribute("full_name") != null ? session.getAttribute("full_name") : "Guest" %>!</p>
     </div>
 
 </body>

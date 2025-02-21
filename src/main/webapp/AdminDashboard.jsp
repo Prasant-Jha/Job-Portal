@@ -1,4 +1,17 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="java.io.*, java.util.*" %>
+
+<%
+    // Check if the session attribute "role" exists
+    String userEmail = (String) session.getAttribute("email");
+
+    // If the user is not logged in, redirect to the login page
+    if (userEmail == null) {
+        response.sendRedirect("Login.jsp"); // Change "login.jsp" to your actual login page
+        return;
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

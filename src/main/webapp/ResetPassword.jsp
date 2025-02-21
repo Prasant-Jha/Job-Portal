@@ -49,13 +49,14 @@
             </strong>
         </p>
 
-        <form action="Login.jsp" class="mt-6 space-y-4">
+        <form action="ResetPasswordServlet" method="POST" class="mt-6 space-y-4">
             <!-- New Password Input -->
             <div class="relative">
                 <span class="absolute left-4 top-3 text-gray-500 text-lg">&#128274;</span>
                 <input
                     type="password"
                     id="password"
+                    name="password"
                     placeholder="New Password"
                     required
                     class="w-full p-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
@@ -68,6 +69,7 @@
                 <input
                     type="password"
                     id="confirmPassword"
+                    name="confirmPassword"	
                     placeholder="Confirm Password"
                     required
                     class="w-full p-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"

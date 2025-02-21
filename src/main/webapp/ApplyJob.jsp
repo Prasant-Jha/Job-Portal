@@ -1,4 +1,18 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="java.io.*, java.util.*" %>
+
+<%
+    // Check if the session attribute "email" exists
+    String userEmail = (String) session.getAttribute("email");
+    if (userEmail == null) {
+        response.sendRedirect("Login.jsp");
+        return;
+    }
+
+    // Retrieve job ID from request
+    String jobId = request.getParameter("job_id");
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +33,9 @@
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Apply for Job</h2>
                 <p class="text-lg text-gray-800 mb-4">Upload your resume</p>
                 
-                <form action="EmployeeDashboard.jsp" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <form action="SubmitApplication.jsp" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <input type="hidden" name="jobId" value="<%= jobId %>" />
+
                     <input 
                         type="file" 
                         name="resume" 
@@ -29,8 +45,7 @@
                     
                     <button 
                         type="submit" 
-                        class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-medium shadow-md hover:bg-blue-700 transition w-full"
-                        onclick="window.location.href='EmployeeDashboard.jsp'">
+                        class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-medium shadow-md hover:bg-blue-700 transition w-full">
                         Submit Application
                     </button>
                 </form>

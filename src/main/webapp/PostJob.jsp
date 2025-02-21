@@ -1,4 +1,21 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="java.io.*, java.util.*, java.text.SimpleDateFormat" %>
+
+<%
+    // Check if the session attribute "email" exists
+    String userEmail = (String) session.getAttribute("email");
+
+    // If the user is not logged in, redirect to the login page
+    if (userEmail == null) {
+        response.sendRedirect("Login.jsp");
+        return;
+    }
+
+    // Get today's date in yyyy-MM-dd format
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    String todayDate = sdf.format(new Date());
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,13 +23,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post a Job</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {},
-            },
-        };
-    </script>
 </head>
 <body class="bg-gray-100">
     
@@ -25,8 +35,11 @@
             <div class="w-full bg-white p-8 border border-gray-300 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Post a Job</h2>
                 
-                <form id="jobForm" action="postJobServlet" method="POST" enctype="multipart/form-data">
+                <form id="jobForm" action="JobPostServlet" method="POST" enctype="multipart/form-data">
                     
+                    <!-- Hidden input to store Employer Email -->
+                    <input type="hidden" name="employerEmail" value="<%= userEmail %>">
+
                     <label for="jobTitle" class="block font-semibold text-gray-700">Job Title*</label>
                     <input type="text" id="jobTitle" name="jobTitle" placeholder="Enter job title" required
                         class="w-full p-3 border border-gray-300 rounded-lg mb-4"/>
@@ -58,6 +71,16 @@
 
                     <label for="image" class="block font-semibold text-gray-700">Image*</label>
                     <input type="file" id="image" name="image" required
+                        class="w-full p-3 border border-gray-300 rounded-lg mb-4"/>
+
+                    <!-- Post Date (Auto-filled) -->
+                    <label for="postDate" class="block font-semibold text-gray-700">Post Date</label>
+                    <input type="date" id="postDate" name="postDate" value="<%= todayDate %>" readonly
+                        class="w-full p-3 border border-gray-300 rounded-lg mb-4 bg-gray-200"/>
+
+                    <!-- Due Date -->
+                    <label for="dueDate" class="block font-semibold text-gray-700">Due Date*</label>
+                    <input type="date" id="dueDate" name="dueDate" required
                         class="w-full p-3 border border-gray-300 rounded-lg mb-4"/>
 
                     <button type="submit"

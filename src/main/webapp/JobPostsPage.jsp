@@ -1,5 +1,25 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.util.*" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="java.sql.*" %>
+
+<%
+    // Session check to verify admin authentication
+    String userEmail = (String) session.getAttribute("email");
+
+    if (userEmail == null) {
+        response.sendRedirect("Login.jsp");
+        return;
+    }
+
+    // Database connection details
+    String url = "jdbc:postgresql://localhost:5432/Job";
+    String user = "postgres";
+    String password = "prashant";
+
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,13 +30,11 @@
 </head>
 <body class="bg-gray-100">
     <div class="w-full min-h-screen">
-        <%-- Header Section --%>
+        <%-- Include header and sidebar --%>
         <jsp:include page="Header.jsp" />
-        
         <div class="flex w-full h-[calc(100vh-80px)]">
-            <%-- Sidebar --%>
             <jsp:include page="Sidebar.jsp" />
-            
+
             <%-- Job Posts Table Section --%>
             <div class="w-3/4 h-full flex flex-col items-center overflow-y-auto py-10 space-y-6 px-8">
                 <h2 class="text-3xl font-bold text-gray-800">Manage Job Posts</h2>
@@ -35,51 +53,35 @@
                         </thead>
                         <tbody>
                             <%
-                                class JobPost {
-                                    int id;
-                                    String image, title, company, location, salary, jobType;
-                                    JobPost(int id, String image, String title, String company, String location, String salary, String jobType) {
-                                        this.id = id;
-                                        this.image = image;
-                                        this.title = title;
-                                        this.company = company;
-                                        this.location = location;
-                                        this.salary = salary;
-                                        this.jobType = jobType;
-                                    }
-                                }
+                                try {
+                                    // Establish connection
+                                    Class.forName("org.postgresql.Driver");
+                                    conn = DriverManager.getConnection(url, user, password);
 
-                                List<JobPost> jobPosts = new ArrayList<>();
-                                jobPosts.add(new JobPost(1, "https://via.placeholder.com/40", "Software Engineer", "TechCorp", "New York, USA", "$80,000", "Full-Time"));
-                                jobPosts.add(new JobPost(2, "https://via.placeholder.com/40", "Product Manager", "Innovate Ltd", "San Francisco, USA", "$100,000", "Part-Time"));
-                                jobPosts.add(new JobPost(1, "https://via.placeholder.com/40", "Software Engineer", "TechCorp", "New York, USA", "$80,000", "Full-Time"));
-                                jobPosts.add(new JobPost(2, "https://via.placeholder.com/40", "Product Manager", "Innovate Ltd", "San Francisco, USA", "$100,000", "Part-Time"));
-                                jobPosts.add(new JobPost(1, "https://via.placeholder.com/40", "Software Engineer", "TechCorp", "New York, USA", "$80,000", "Full-Time"));
-                                jobPosts.add(new JobPost(2, "https://via.placeholder.com/40", "Product Manager", "Innovate Ltd", "San Francisco, USA", "$100,000", "Part-Time"));
-                                jobPosts.add(new JobPost(1, "https://via.placeholder.com/40", "Software Engineer", "TechCorp", "New York, USA", "$80,000", "Full-Time"));
-                                jobPosts.add(new JobPost(2, "https://via.placeholder.com/40", "Product Manager", "Innovate Ltd", "San Francisco, USA", "$100,000", "Part-Time"));
-                                jobPosts.add(new JobPost(1, "https://via.placeholder.com/40", "Software Engineer", "TechCorp", "New York, USA", "$80,000", "Full-Time"));
-                                jobPosts.add(new JobPost(2, "https://via.placeholder.com/40", "Product Manager", "Innovate Ltd", "San Francisco, USA", "$100,000", "Part-Time"));
+                                    // Query to fetch all job posts
+                                    String query = "SELECT id, image, job_title, company, location, salary, job_type FROM jobs";
+                                    stmt = conn.prepareStatement(query);
+                                    rs = stmt.executeQuery();
 
-                                if (jobPosts.isEmpty()) {
+                                    if (!rs.isBeforeFirst()) { // No records found
                             %>
                             <tr>
                                 <td colspan="7" class="text-center p-4 text-gray-600">No job posts found.</td>
                             </tr>
                             <%
-                                } else {
-                                    for (JobPost job : jobPosts) {
+                                    } else {
+                                        while (rs.next()) {
                             %>
                             <tr class="border-b">
-                                <td class="p-3"><img src="<%= job.image %>" alt="Job" class="w-10 h-10 rounded-full" /></td>
-                                <td class="p-3"><%= job.title %></td>
-                                <td class="p-3"><%= job.company %></td>
-                                <td class="p-3"><%= job.location %></td>
-                                <td class="p-3"><%= job.salary %></td>
-                                <td class="p-3"><%= job.jobType %></td>
+                                <td class="p-3"><img src="<%= rs.getString("image") %>" alt="Job" class="w-10 h-10 rounded-full" /></td>
+                                <td class="p-3"><%= rs.getString("job_title") %></td>
+                                <td class="p-3"><%= rs.getString("company") %></td>
+                                <td class="p-3"><%= rs.getString("location") %></td>
+                                <td class="p-3"><%= rs.getString("salary") %></td>
+                                <td class="p-3"><%= rs.getString("job_type") %></td>
                                 <td class="p-3 text-center">
                                     <form action="deleteJob.jsp" method="POST">
-                                        <input type="hidden" name="jobId" value="<%= job.id %>" />
+                                        <input type="hidden" name="jobId" value="<%= rs.getInt("id") %>" />
                                         <button type="submit" class="text-red-600 hover:text-red-800">
                                             &#128465; <!-- Trash icon -->
                                         </button>
@@ -87,7 +89,15 @@
                                 </td>
                             </tr>
                             <%
+                                        }
                                     }
+                                } catch (Exception e) {
+                                    out.println("<tr><td colspan='7' class='text-red-500 text-center'>Error: " + e.getMessage() + "</td></tr>");
+                                } finally {
+                                    // Close resources
+                                    if (rs != null) try { rs.close(); } catch (SQLException e) {}
+                                    if (stmt != null) try { stmt.close(); } catch (SQLException e) {}
+                                    if (conn != null) try { conn.close(); } catch (SQLException e) {}
                                 }
                             %>
                         </tbody>

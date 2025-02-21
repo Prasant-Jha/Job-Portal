@@ -78,17 +78,7 @@
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded mt-3">Register now</button>
                 </div>
             </form>
-
-            <!-- Google Login -->
-            <div class="text-center mt-6 flex justify-center">
-                <div>
-                    <span class="block text-gray-500 mb-2">Or</span>
-                    <button class="flex items-center justify-center gap-2 border px-4 py-2 rounded hover:border-black">
-                        <img src="assets/google.png" alt="Google" class="w-6">
-                        Continue with Google
-                    </button>
-                </div>
-            </div>
+            
         </div>
     </div>
 </body>

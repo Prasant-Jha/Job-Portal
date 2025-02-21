@@ -7,6 +7,9 @@
     if (currentPage.contains("?")) {
         currentPage = currentPage.substring(0, currentPage.indexOf("?"));
     }
+
+    // Get user role and email from session
+   String userRole = (String) session.getAttribute("role");
 %>
 
 <!DOCTYPE html>
@@ -31,7 +34,9 @@
 
         <!-- Sidebar Items -->
         <ul class="space-y-4 text-lg font-medium">
-            <!-- Admin Section -->
+
+            <%-- Show Admin tab only if the email is "pjha693@rku.ac.in" --%>
+            <% if ("admin".equals(userRole)) { %>
             <li>
                 <div class="flex items-center justify-between p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
                      onclick="toggleSection('admin')">
@@ -46,8 +51,10 @@
                     <li><a href="JobPostsPage.jsp" class="block p-2 rounded-md <%= currentPage.equals("JobPostsPage.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Job Posts Page</a></li>
                 </ul>
             </li>
+            <% } %>
 
-            <!-- Employer Section -->
+            <%-- Show Employer tab only if the user role is "employer" --%>
+            <% if ("Employer".equals(userRole)) { %>
             <li>
                 <div class="flex items-center justify-between p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
                      onclick="toggleSection('employer')">
@@ -59,10 +66,12 @@
                 <ul id="employer-menu" class="pl-8 mt-2 space-y-2 hidden">
                     <li><a href="EmployerDashboard.jsp" class="block p-2 rounded-md <%= currentPage.equals("EmployerDashboard.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Employer Dashboard</a></li>
                     <li><a href="PostJob.jsp" class="block p-2 rounded-md <%= currentPage.equals("PostJob.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Post a Job</a></li>
+                    <li><a href="Applicants.jsp" class="block p-2 rounded-md <%= currentPage.equals("Applicants.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Applicants</a></li>
                 </ul>
             </li>
+            <% } %>
 
-            <!-- Other Sections -->
+            <!-- Common Sections for All Users -->
             <li>
                 <a href="Job.jsp" class="flex items-center p-4 rounded-lg shadow-md <%= currentPage.equals("Job.jsp") ? "bg-blue-500 text-white font-bold" : "text-gray-700 hover:text-blue-600" %>">
                     💼 <span class="ml-3">Jobs</span>
@@ -82,77 +91,54 @@
             </li>
 
             <li>
-                <form action="Logout.jsp" method="post">
-                    <button type="submit" class="flex items-center p-4 rounded-lg shadow-md text-red-600">
-                        🚪 Logout
-                    </button>
-                </form>
-            </li>
+    			<form action="LogoutServlet" method="get">
+        			<button type="submit" class="flex items-center p-4 rounded-lg shadow-md w-full text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+            			🚪<span class="ml-3">Logout</span>
+        			</button>
+    			</form>
+			</li>
+
         </ul>
     </div>
 
     <script>
     function toggleSection(section) {
-        const sections = ["admin", "employer"];
-        let isAnyOpen = false;
+        const menu = document.getElementById(section + "-menu");
+        const arrow = document.getElementById(section + "-arrow");
 
-        sections.forEach(sec => {
-            const menu = document.getElementById(sec + "-menu");
-            const arrow = document.getElementById(sec + "-arrow");
+        if (!menu || !arrow) return; // Prevent errors if elements are missing
 
-            if (sec === section) {
-                if (menu.classList.contains("hidden")) {
-                    menu.classList.remove("hidden");
-                    arrow.classList.add("rotate-90");
-                    localStorage.setItem(sec, "open");
-                    isAnyOpen = true;
-                } else {
-                    menu.classList.add("hidden");
-                    arrow.classList.remove("rotate-90");
-                    localStorage.removeItem(sec);
-                }
-            } else {
-                menu.classList.add("hidden");
-                arrow.classList.remove("rotate-90");
-                localStorage.removeItem(sec);
-            }
-        });
+        // Toggle visibility
+        const isHidden = menu.classList.contains("hidden");
+        document.querySelectorAll(".submenu").forEach(el => el.classList.add("hidden"));
+        document.querySelectorAll(".arrow-icon").forEach(el => el.classList.remove("rotate-90"));
 
-        // Check if a submenu item is selected
-        const selectedMenuItem = document.querySelector(".bg-blue-500");
-        if (!selectedMenuItem) {
-            sections.forEach(sec => {
-                document.getElementById(sec + "-menu").classList.add("hidden");
-                document.getElementById(sec + "-arrow").classList.remove("rotate-90");
-                localStorage.removeItem(sec);
-            });
+        if (isHidden) {
+            menu.classList.remove("hidden");
+            arrow.classList.add("rotate-90");
+            localStorage.setItem(section, "open");
+        } else {
+            menu.classList.add("hidden");
+            arrow.classList.remove("rotate-90");
+            localStorage.removeItem(section);
         }
     }
 
-    // Restore open sections on page load based on selected menu item
+    // Restore open sections on page load
     document.addEventListener("DOMContentLoaded", function () {
         const sections = ["admin", "employer"];
-        const selectedMenuItem = document.querySelector(".bg-blue-500");
-        let isAnyOpen = false;
-
         sections.forEach(section => {
-            if (localStorage.getItem(section) === "open" && selectedMenuItem) {
-                document.getElementById(section + "-menu").classList.remove("hidden");
-                document.getElementById(section + "-arrow").classList.add("rotate-90");
-                isAnyOpen = true;
+            const menu = document.getElementById(section + "-menu");
+            const arrow = document.getElementById(section + "-arrow");
+
+            if (!menu || !arrow) return;
+
+            if (localStorage.getItem(section) === "open") {
+                menu.classList.remove("hidden");
+                arrow.classList.add("rotate-90");
             }
         });
-
-        // If no menu item is selected, ensure all menus are closed
-        if (!isAnyOpen) {
-            sections.forEach(section => {
-                localStorage.removeItem(section);
-                document.getElementById(section + "-menu").classList.add("hidden");
-                document.getElementById(section + "-arrow").classList.remove("rotate-90");
-            });
-        }
     });
-
     </script>
 
 </body>

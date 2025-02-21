@@ -44,15 +44,6 @@
                 <button type="submit" class="w-full mt-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Login</button>
             </form>
             
-            <div class="flex items-center my-4">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="px-2 text-gray-500">Or</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-            </div>
-            
-            <a href="GoogleLoginServlet" class="w-full flex items-center justify-center py-2 border rounded-md hover:border-black">
-                <img src="assets/google.png" alt="Google" class="w-6 mr-2"/> Sign in with Google
-            </a>
         </div>
     </div>
 </body>

@@ -46,12 +46,13 @@
             </strong>
         </p>
 
-        <form action="ResetPassword.jsp" class="mt-6 space-y-4">
+        <form action="VerifyOTPServlet" method="POST" class="mt-6 space-y-4">
             <div class="relative">
                 <span class="absolute left-4 top-3 text-gray-500 text-lg">&#128274;</span>
                 <input 
                     type="text"
                     id="otp"
+                    name="otp"
                     placeholder="Enter OTP"
                     required
                     maxlength="6"

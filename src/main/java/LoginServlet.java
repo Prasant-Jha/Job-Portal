@@ -1,12 +1,10 @@
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,65 +16,68 @@ import jakarta.servlet.http.HttpSession;
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // Database credentials
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/Job-Portal";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "prashant";
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/Job";
+    private static final String JDBC_USER = "postgres";
+    private static final String JDBC_PASSWORD = "prashant";
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+        throws ServletException, IOException {
+        
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        // Hash the input password
-        String hashedPassword = hashPassword(password);
-
         try {
             Class.forName("org.postgresql.Driver");
-            Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-            
-            String query = "SELECT * FROM users WHERE email = ? AND password = ?";
-            PreparedStatement pst = con.prepareStatement(query);
-            pst.setString(1, email);
-            pst.setString(2, hashedPassword);
-            
-            ResultSet rs = pst.executeQuery();
-            
+            Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+            String sql = "SELECT * FROM users WHERE email=?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+
             if (rs.next()) {
-                // Login successful
-                HttpSession session = request.getSession();
-                session.setAttribute("email", email);
-                session.setAttribute("role", rs.getString("role"));
-                
-                // Redirect to the user's dashboard or home page
-                response.sendRedirect("Job.jsp");
+                String storedHexPassword = rs.getString("password").substring(2); // Remove \x prefix
+                String hashedInputPassword = hashPasswordToHex(password); // Convert input password to hex
+
+                if (storedHexPassword.equalsIgnoreCase(hashedInputPassword)) {
+                    // Create session if password matches
+                    HttpSession session = request.getSession();
+                    session.setAttribute("email", email);
+                    session.setAttribute("full_name", rs.getString("full_name"));
+                    session.setAttribute("role", rs.getString("role"));
+                    session.setAttribute("mobile", rs.getString("mobile"));
+                    session.setAttribute("bio", rs.getString("bio"));
+                    session.setAttribute("profilePic", rs.getString("profilePic"));
+                    session.setMaxInactiveInterval(30 * 60); // Session expires after 30 minutes
+                    
+                    response.sendRedirect("Job.jsp"); // Redirect to dashboard
+                } else {
+                    response.sendRedirect("Login.jsp?error=Invalid email or password");
+                }
             } else {
-                // Login failed
-                out.println("<h3>Invalid credentials, please try again!</h3>");
+                response.sendRedirect("Login.jsp?error=Invalid email or password");
             }
-            
-            con.close();
-        } catch (ClassNotFoundException | SQLException e) {
+
+            pstmt.close();
+            conn.close();
+        } catch (Exception e) {
             e.printStackTrace();
-            out.println("<h3>Error: " + e.getMessage() + "</h3>");
         }
     }
 
-    // Method to hash the password using SHA-256
-    private String hashPassword(String password) {
+    // Method to hash password to Hexadecimal (instead of Base64)
+    private String hashPasswordToHex(String password) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(password.getBytes());
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            
+            // Convert byte array to hex string
             StringBuilder hexString = new StringBuilder();
-            for (byte b : hashBytes) {
+            for (byte b : hashedBytes) {
                 hexString.append(String.format("%02x", b));
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Error hashing password", e);
         }
     }
 }

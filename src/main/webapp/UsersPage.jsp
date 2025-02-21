@@ -1,4 +1,55 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page import="java.sql.*, java.util.*" %>
+
+<%
+    // Check if the session attribute "email" exists
+    String userEmail = (String) session.getAttribute("email");
+
+    // If the user is not logged in, redirect to the login page
+    if (userEmail == null) {
+        response.sendRedirect("Login.jsp");
+        return;
+    }
+
+    // Database connection details
+    String JDBC_URL = "jdbc:postgresql://localhost:5432/Job";
+    String JDBC_USER = "postgres";
+    String JDBC_PASSWORD = "prashant";
+
+    Connection conn = null;
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    List<Map<String, String>> users = new ArrayList<>();
+
+    try {
+        Class.forName("org.postgresql.Driver");
+        conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+
+        // Fetch users from database
+        String sql = "SELECT id, profilePic, full_name, email, mobile, role FROM users";
+        pstmt = conn.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+
+        while (rs.next()) {
+            Map<String, String> user = new HashMap<>();
+            user.put("id", rs.getString("id"));
+            user.put("profilePic", rs.getString("profilePic") != null ? rs.getString("profilePic") : "https://via.placeholder.com/40");
+            user.put("name", rs.getString("full_name"));
+            user.put("email", rs.getString("email"));
+            user.put("contact", rs.getString("mobile"));
+            user.put("role", rs.getString("role"));
+            users.add(user);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        if (rs != null) try { rs.close(); } catch (SQLException ignored) {}
+        if (pstmt != null) try { pstmt.close(); } catch (SQLException ignored) {}
+        if (conn != null) try { conn.close(); } catch (SQLException ignored) {}
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,52 +81,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% 
-                        class User {
-                            int id;
-                            String profilePic, name, email, contact, role;
-                            User(int id, String profilePic, String name, String email, String contact, String role) {
-                                this.id = id;
-                                this.profilePic = profilePic;
-                                this.name = name;
-                                this.email = email;
-                                this.contact = contact;
-                                this.role = role;
-                            }
-                        }
-
-                        List<User> users = new ArrayList<>();
-                        users.add(new User(1, "https://via.placeholder.com/40", "John Doe", "johndoe@example.com", "+1234567890", "Admin"));
-                        users.add(new User(2, "https://via.placeholder.com/40", "Jane Smith", "janesmith@example.com", "+0987654321", "User"));
-                        users.add(new User(3, "https://via.placeholder.com/40", "Sam Wilson", "samwilson@example.com", "+1122334455", "User"));
-                        users.add(new User(4, "https://via.placeholder.com/40", "Mike Johnson", "mikejohnson@example.com", "+6677889900", "Admin"));
-                        users.add(new User(1, "https://via.placeholder.com/40", "John Doe", "johndoe@example.com", "+1234567890", "Admin"));
-                        users.add(new User(2, "https://via.placeholder.com/40", "Jane Smith", "janesmith@example.com", "+0987654321", "User"));
-                        users.add(new User(3, "https://via.placeholder.com/40", "Sam Wilson", "samwilson@example.com", "+1122334455", "User"));
-                        users.add(new User(4, "https://via.placeholder.com/40", "Mike Johnson", "mikejohnson@example.com", "+6677889900", "Admin"));
-                        users.add(new User(1, "https://via.placeholder.com/40", "John Doe", "johndoe@example.com", "+1234567890", "Admin"));
-                        users.add(new User(2, "https://via.placeholder.com/40", "Jane Smith", "janesmith@example.com", "+0987654321", "User"));
-                        users.add(new User(3, "https://via.placeholder.com/40", "Sam Wilson", "samwilson@example.com", "+1122334455", "User"));
-                        users.add(new User(4, "https://via.placeholder.com/40", "Mike Johnson", "mikejohnson@example.com", "+6677889900", "Admin"));
-
-
-                        if (users.isEmpty()) { %>
+                        <% if (users.isEmpty()) { %>
                             <tr>
                                 <td colspan="6" class="text-center p-4 text-gray-600">No users found.</td>
                             </tr>
-                        <% } else { 
-                            for (User user : users) { %>
+                        <% } else {
+                            for (Map<String, String> user : users) { %>
                             <tr class="border-b">
                                 <td class="p-3">
-                                    <img src="<%= user.profilePic %>" alt="Profile" class="w-10 h-10 rounded-full" />
+                                    <img src="<%= user.get("profilePic") %>" alt="Profile" class="w-10 h-10 rounded-full" />
                                 </td>
-                                <td class="p-3"><%= user.name %></td>
-                                <td class="p-3"><%= user.email %></td>
-                                <td class="p-3"><%= user.contact %></td>
-                                <td class="p-3"><%= user.role %></td>
+                                <td class="p-3"><%= user.get("name") %></td>
+                                <td class="p-3"><%= user.get("email") %></td>
+                                <td class="p-3"><%= user.get("contact") %></td>
+                                <td class="p-3"><%= user.get("role") %></td>
                                 <td class="p-3 text-center">
-                                    <form action="deleteUser.jsp" method="POST">
-                                        <input type="hidden" name="userId" value="<%= user.id %>" />
+                                    <form action="DeleteUserServlet" method="POST">
+                                        <input type="hidden" name="userId" value="<%= user.get("id") %>" />
                                         <button type="submit" class="text-red-600 hover:text-red-800">
                                             &#128465; <!-- Trash icon -->
                                         </button>

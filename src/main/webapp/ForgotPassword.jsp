@@ -39,12 +39,13 @@
         <h2 class="text-2xl font-semibold text-gray-800 text-center">Forgot Password?</h2>
         <p class="text-gray-600 text-center mt-2">Enter your email to receive an OTP.</p>
 
-        <form  action="VerifyOTP.jsp" class="mt-6">
+        <form  action="SendOTPServlet" method="POST" class="mt-6">
             <div class="relative">
                 <span class="absolute left-3 top-3 text-gray-400">&#9993;</span>
                 <input
                     type="email"
                     id="email"
+                    name="email"
                     placeholder="Enter your email"
                     required
                     class="w-full p-3 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
