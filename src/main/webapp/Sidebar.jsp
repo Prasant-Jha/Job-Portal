@@ -23,14 +23,17 @@
 
     <div class="w-1/4 h-full p-5 border-r border-gray-300">
         <!-- Search Bar -->
-        <div class="flex items-center bg-white border border-gray-400 px-4 py-2 w-full mb-6">
-            <span class="text-gray-500 text-lg">🔍</span>
-            <input
-                type="text"
-                placeholder="Search..."
-                class="ml-3 w-full outline-none text-lg bg-transparent"
-            />
-        </div>
+       <form action="Job.jsp" method="GET" class="w-full">
+    		<div class="flex items-center bg-white border border-gray-400 px-4 py-2 w-full mb-6">
+        		<span class="text-gray-500 text-lg">🔍</span>
+        		<input
+            		type="text"
+            		name="search"
+            		placeholder="Search..."
+            		class="ml-3 w-full outline-none text-lg bg-transparent"
+        		/>
+    		</div>
+		</form>
 
         <!-- Sidebar Items -->
         <ul class="space-y-4 text-lg font-medium">
@@ -83,12 +86,14 @@
                     👤 <span class="ml-3">Profile</span>
                 </a>
             </li>
-
+			
+			 <% if ("Job Seeker".equals(userRole)) { %>
             <li>
                 <a href="EmployeeDashboard.jsp" class="flex items-center p-4 rounded-lg shadow-md <%= currentPage.equals("EmployeeDashboard.jsp") ? "bg-blue-500 text-white font-bold" : "text-gray-700 hover:text-blue-600" %>">
                     📄 <span class="ml-3">Applications</span>
                 </a>
             </li>
+            <% } %>
 
             <li>
     			<form action="LogoutServlet" method="get">

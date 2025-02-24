@@ -41,6 +41,7 @@ public class LoginServlet extends HttpServlet {
                 if (storedHexPassword.equalsIgnoreCase(hashedInputPassword)) {
                     // Create session if password matches
                     HttpSession session = request.getSession();
+                    session.setAttribute("userId", rs.getInt("id"));
                     session.setAttribute("email", email);
                     session.setAttribute("full_name", rs.getString("full_name"));
                     session.setAttribute("role", rs.getString("role"));

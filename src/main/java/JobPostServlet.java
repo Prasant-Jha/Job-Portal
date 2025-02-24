@@ -35,17 +35,22 @@ public class JobPostServlet extends HttpServlet {
         String description = request.getParameter("description");
         Part imagePart = request.getPart("image");
 
-        // ✅ Ensure "uploads" directory exists before saving the file
-        String uploadDir = "C:/uploads/";
+        // Ensure the "assets" directory exists
+        String uploadDir = getServletContext().getRealPath("/") + "assets/";
         File uploadPath = new File(uploadDir);
         if (!uploadPath.exists()) {
-            uploadPath.mkdirs();  // Create directory if not exists
+            uploadPath.mkdirs();
         }
 
-        // Save uploaded image
-        String imageName = imagePart.getSubmittedFileName();
+        // Generate a unique image name
+        String imageName = "job_" + System.currentTimeMillis() + "_" + imagePart.getSubmittedFileName();
         String filePath = uploadDir + imageName;
+        
+        // Save the uploaded file
         imagePart.write(filePath);
+
+        // Store the relative path in the database
+        String imagePath = "assets/" + imageName;
 
         // Convert dates
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -70,7 +75,7 @@ public class JobPostServlet extends HttpServlet {
             stmt.setString(5, salary);
             stmt.setString(6, jobType);
             stmt.setString(7, description);
-            stmt.setString(8, imageName);
+            stmt.setString(8, imagePath); // Store the correct relative path
             stmt.setDate(9, new java.sql.Date(postDate.getTime()));
             stmt.setDate(10, new java.sql.Date(dueDate.getTime()));
 

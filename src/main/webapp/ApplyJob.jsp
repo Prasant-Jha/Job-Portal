@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ page import="java.io.*, java.util.*" %>
+<%@ page import="java.io.*" %>
+<%@ page import="java.sql.*, java.util.*, jakarta.servlet.*, jakarta.servlet.http.*" %>
 
 <%
     // Check if the session attribute "email" exists
@@ -10,7 +11,11 @@
     }
 
     // Retrieve job ID from request
-    String jobId = request.getParameter("job_id");
+    String jobId = request.getParameter("jobId");
+if (jobId == null || jobId.isEmpty()) {
+    response.sendRedirect("JobDetailsPage.jsp?error=missingJobId");
+    return;
+}
 %>
 
 <!DOCTYPE html>
@@ -32,8 +37,8 @@
             <div class="bg-white w-11/12 p-8 border border-gray-300 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Apply for Job</h2>
                 <p class="text-lg text-gray-800 mb-4">Upload your resume</p>
-                
-                <form action="SubmitApplication.jsp" method="POST" enctype="multipart/form-data" class="space-y-4">
+
+                <form action="SubmitApplication" method="POST" enctype="multipart/form-data" class="space-y-4">
                     <input type="hidden" name="jobId" value="<%= jobId %>" />
 
                     <input 
@@ -42,7 +47,7 @@
                         required 
                         class="w-full p-2 border border-gray-300 rounded-lg cursor-pointer"
                     />
-                    
+
                     <button 
                         type="submit" 
                         class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-medium shadow-md hover:bg-blue-700 transition w-full">

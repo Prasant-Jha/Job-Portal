@@ -1,15 +1,34 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ page import="java.io.*, java.sql.*, java.util.*" %>
+<%@ page import="jakarta.servlet.annotation.MultipartConfig" %>
+<%@ page import="jakarta.servlet.http.Part" %>
+
+<%@ page import="java.io.*, java.sql.*, jakarta.servlet.*, jakarta.servlet.http.*" %>
+
+<%@ MultipartConfig %>
+
+
 <%
-    // Check if the session attribute "email" exists
+    // Ensure session exists
     String userEmail = (String) session.getAttribute("email");
     if (userEmail == null) {
         response.sendRedirect("Login.jsp");
         return;
     }
 
-    // Get job ID
+    // Get job ID safely
     String jobId = request.getParameter("jobId");
+if (jobId == null || jobId.isEmpty()) {
+    response.sendRedirect("ApplyJob.jsp?error=missingJobId");
+    return;
+}
+
+    int jobIdInt = 0;
+    try {
+        jobIdInt = Integer.parseInt(jobId);
+    } catch (NumberFormatException e) {
+        response.sendRedirect("ApplyJob.jsp?error=Invalid Job ID format");
+        return;
+    }
 
     // Database credentials
     String jdbcURL = "jdbc:postgresql://localhost:5432/Job";
@@ -20,8 +39,8 @@
     PreparedStatement pstmt = null;
     ResultSet rs = null;
 
-    // Get User ID from database
     int userId = -1;
+    String resumePath = "";
 
     try {
         Class.forName("org.postgresql.Driver");
@@ -42,17 +61,22 @@
         rs.close();
         pstmt.close();
 
-        // File Upload Handling
-        String resumePath = "uploads/" + userId + "_" + jobId + "_resume.pdf";
+        // Handle file upload
         Part filePart = request.getPart("resume");
-        String savePath = application.getRealPath("/") + resumePath;
-        filePart.write(savePath);
+        if (filePart != null) {
+            resumePath = "uploads/" + userId + "_" + jobIdInt + "_resume.pdf";
+            String savePath = application.getRealPath("/") + resumePath;
+            filePart.write(savePath);
+        } else {
+            response.sendRedirect("ApplyJob.jsp?error=File upload failed");
+            return;
+        }
 
         // Insert application into database
         String insertQuery = "INSERT INTO application (user_id, job_id, resume_path, status) VALUES (?, ?, ?, 'Pending')";
         pstmt = conn.prepareStatement(insertQuery);
         pstmt.setInt(1, userId);
-        pstmt.setInt(2, Integer.parseInt(jobId));
+        pstmt.setInt(2, jobIdInt);
         pstmt.setString(3, resumePath);
         pstmt.executeUpdate();
 
@@ -60,7 +84,7 @@
 
     } catch (Exception e) {
         e.printStackTrace();
-        response.sendRedirect("ApplyJob.jsp?error=Application+Failed");
+        response.sendRedirect("ApplyJob.jsp?error=" + e.getMessage());
     } finally {
         if (pstmt != null) pstmt.close();
         if (conn != null) conn.close();

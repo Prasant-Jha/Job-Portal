@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
-<%@ page import="java.io.*, java.util.*, java.sql.*" %>
+<%@ page import="java.io.*" %>
+<%@ page import="java.sql.*, java.util.*, jakarta.servlet.*, jakarta.servlet.http.*" %>
+
 
 <%
     // Check if the session attribute "email" exists
@@ -12,7 +14,11 @@
     }
 
     // Get job_id from request
-    String jobId = request.getParameter("jobId");
+   String jobId = request.getParameter("jobId");
+if (jobId == null || jobId.isEmpty()) {
+    out.println("Job ID is missing");
+    return;
+}
 
     // PostgreSQL Database Connection
     String jdbcURL = "jdbc:postgresql://localhost:5432/Job"; // Change if your DB is hosted elsewhere
@@ -85,7 +91,7 @@
                 <!-- Job Header -->
                 <div class="flex justify-between items-center mb-6">
                     <div class="flex items-center space-x-4">
-                        <img src="<%= image %>" alt="Company Logo" class="w-20 h-20 object-cover rounded-full border border-gray-300">
+                        <img src="<%= request.getContextPath() %>/<%= image %>" alt="Company Logo" class="w-20 h-20 object-cover rounded-full border border-gray-300">
                         <div>
                             <h2 class="text-2xl font-bold text-gray-800"><%= jobTitle %></h2>
                             <p class="text-gray-500"><%= company %> - <%= location %></p>

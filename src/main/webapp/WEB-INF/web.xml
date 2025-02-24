@@ -149,4 +149,14 @@
     <servlet-name>UpdateJobServlet</servlet-name>
     <url-pattern>/UpdateJobServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>SubmitApplication</display-name>
+    <servlet-name>SubmitApplication</servlet-name>
+    <servlet-class>SubmitApplication</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SubmitApplication</servlet-name>
+    <url-pattern>/SubmitApplication</url-pattern>
+  </servlet-mapping>
 </web-app>
