@@ -27,7 +27,12 @@
         conn = DriverManager.getConnection(dbURL, dbUser, dbPass);
         
         // Query to fetch applications for the logged-in user
-        String sql = "SELECT job_id, resume_path, status FROM application WHERE user_id = ?";
+        String sql = "SELECT a.job_id, a.resume_path, a.status, j.job_title, j.company, j.location " + 
+             "FROM application a " +  // Added space before FROM
+             "JOIN jobs j ON a.job_id = j.id " + 
+             "WHERE a.user_id = ?";
+
+        		
         ps = conn.prepareStatement(sql);
         ps.setInt(1, userId);
         rs = ps.executeQuery();
@@ -37,6 +42,8 @@
             appData.put("jobId", rs.getString("job_id"));
             appData.put("resume", rs.getString("resume_path"));
             appData.put("status", rs.getString("status"));
+            appData.put("company", rs.getString("company"));
+            appData.put("location", rs.getString("location"));
             applications.add(appData);
         }
     } catch (Exception e) {
@@ -77,7 +84,8 @@
                 <% for (Map<String, String> app : applications) { %>
                     <div class="bg-white w-11/12 p-6 border border-gray-300 rounded-lg shadow-md">
                         <p class="text-gray-700"><strong>Job ID:</strong> <%= app.get("jobId") %></p>
-                        <p class="text-gray-700"><strong>Resume:</strong> <%= app.get("resume") %></p>
+                        <p class="text-gray-700"><strong>Company:</strong> <%= app.get("company") %></p>
+                        <p class="text-gray-700"><strong>Location:</strong> <%= app.get("location") %></p>
                         <p class="text-gray-700"><strong>Status:</strong>
                             <% if ("Pending".equalsIgnoreCase(app.get("status"))) { %>
                                 <span class="text-blue-600">Pending</span>

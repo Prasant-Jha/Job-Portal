@@ -1,15 +1,15 @@
 <%@ page import="java.sql.*" %>
-
 <%
     String appIdStr = request.getParameter("appId");
     String newStatus = request.getParameter("newStatus");
+
 
     if (appIdStr == null || appIdStr.trim().isEmpty() || newStatus == null || newStatus.trim().isEmpty()) {
         out.println("Invalid data provided.");
         return;
     }
 
-    int appId = -1;
+    int appId;
     try {
         appId = Integer.parseInt(appIdStr.trim());
     } catch (NumberFormatException e) {

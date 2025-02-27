@@ -48,8 +48,15 @@
                     Class.forName("org.postgresql.Driver");
                     conn = DriverManager.getConnection(url, user, password);
 
-                    String query = "SELECT id, resume_path, status FROM application";
+                    // Query to fetch applications with job title
+                    String query = "SELECT a.id, a.resume_path, a.status, a.job_id, a.user_id, j.employer_email, j.job_title, u.full_name " +
+                                   "FROM application a " +
+                                   "JOIN jobs j ON a.job_id = j.id " +
+                                   "JOIN users u ON user_id = u.id " +
+                                   "WHERE j.employer_email = ?";
+
                     stmt = conn.prepareStatement(query);
+                    stmt.setString(1, userEmail);
                     rs = stmt.executeQuery();
 
                     if (rs.isBeforeFirst()) { // Check if result set has data
@@ -58,9 +65,13 @@
                             int appId = rs.getInt("id");
                             String resumePath = rs.getString("resume_path");
                             String status = rs.getString("status");
+                            String jobTitle = rs.getString("job_title"); // Get the job title
+                            String username = rs.getString("full_name");
             %>
 
             <div class="bg-white w-11/12 p-6 border border-gray-300 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold text-gray-800"><%= jobTitle %></h3>
+                <p class="text-gray-700"><strong>Username:</strong> <%= username %></p>
                 <p class="text-gray-700"><strong>Resume:</strong> <%= resumePath %></p>
                 <p class="text-gray-700"><strong>Status:</strong> 
                     <span class="<%= status.equals("Selected") ? "text-green-600" : status.equals("Rejected") ? "text-red-600" : "text-blue-600" %>">
@@ -69,9 +80,8 @@
                 </p>
                 <div class="flex space-x-4 mt-4">
                     <button onclick="updateStatus(<%= appId %>, 'Selected')" class="bg-green-500 text-white px-4 py-2 rounded-md">Select</button>
-                    <button onclick="updateStatus(<%= appId %>, 'Pending')" class="bg-yellow-500 text-white px-4 py-2 rounded-md">Pending</button>
                     <button onclick="updateStatus(<%= appId %>, 'Rejected')" class="bg-red-500 text-white px-4 py-2 rounded-md">Reject</button>
-                    <a href="<%= resumePath %>" download class="bg-blue-500 text-white px-4 py-2 rounded-md">Download Resume</a>
+                   	<a href="DownloadServlet?file=<%= resumePath %>" class="bg-blue-500 text-white px-4 py-2 rounded-md">Download Resume</a>
                 </div>
             </div>
 
@@ -89,7 +99,7 @@
                 // If no data is found, show message
                 if (!hasData) {
             %>
-                <p class="text-gray-500 text-lg">No job applications for any jobs yet.</p>
+                <p class="text-gray-500 text-lg">No job applications for your jobs yet.</p>
             <%
                 }
             %>
@@ -99,19 +109,24 @@
 
     <%-- JavaScript for updating status --%>
     <script>
-        function updateStatus(appId, newStatus) {
-            fetch("updateStatus.jsp", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: `appId=${appId}&newStatus=${newStatus}`
-            })
-            .then(response => response.text())
-            .then(data => {
-                alert(data);
-                location.reload();
-            })
-            .catch(error => console.error("Error:", error));
-        }
+    function updateStatus(appId, newStatus) {
+        console.log("Sending App ID:", appId);
+        console.log("Sending New Status:", newStatus);
+
+        fetch("updateStatus.jsp?appId=" + encodeURIComponent(appId) + "&newStatus=" + encodeURIComponent(newStatus), {
+            method: "GET", // Change to GET since manual GET request is working
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log("Response from server:", data);
+            alert(data);
+            location.reload();
+        })
+        .catch(error => console.error("Error:", error));
+    }
+
+
+
     </script>
 
 </body>

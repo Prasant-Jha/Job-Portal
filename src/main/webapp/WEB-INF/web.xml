@@ -159,4 +159,24 @@
     <servlet-name>SubmitApplication</servlet-name>
     <url-pattern>/SubmitApplication</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ApplyJobServlet</display-name>
+    <servlet-name>ApplyJobServlet</servlet-name>
+    <servlet-class>ApplyJobServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ApplyJobServlet</servlet-name>
+    <url-pattern>/ApplyJobServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DownloadServlet</display-name>
+    <servlet-name>DownloadServlet</servlet-name>
+    <servlet-class>DownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DownloadServlet</servlet-name>
+    <url-pattern>/DownloadServlet</url-pattern>
+  </servlet-mapping>
 </web-app>
