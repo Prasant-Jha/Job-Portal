@@ -62,12 +62,12 @@
                 <div class="flex items-center justify-between p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100"
                      onclick="toggleSection('employer')">
                     <div class="flex items-center space-x-3">
-                        💼 <span>Employer</span>
+                        💼 <span>Recruiter</span>
                     </div>
                     <span id="employer-arrow" class="text-gray-400 text-lg transition-transform">▶</span>
                 </div>
                 <ul id="employer-menu" class="pl-8 mt-2 space-y-2 hidden">
-                    <li><a href="EmployerDashboard.jsp" class="block p-2 rounded-md <%= currentPage.equals("EmployerDashboard.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Employer Dashboard</a></li>
+                    <li><a href="EmployerDashboard.jsp" class="block p-2 rounded-md <%= currentPage.equals("EmployerDashboard.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Recruiter Dashboard</a></li>
                     <li><a href="PostJob.jsp" class="block p-2 rounded-md <%= currentPage.equals("PostJob.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Post a Job</a></li>
                     <li><a href="Applicants.jsp" class="block p-2 rounded-md <%= currentPage.equals("Applicants.jsp") ? "bg-blue-500 text-white" : "hover:text-blue-600" %>">Applicants</a></li>
                 </ul>
